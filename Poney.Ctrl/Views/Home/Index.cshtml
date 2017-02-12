@@ -42,7 +42,7 @@
 </head>
 <body>
     <div id="divProductGame" style="padding: 10px;">
-        <a href="javascript:;" class="dbMultiBtn blue" onclick="ConfirmSelect()" style="margin-bottom: 5px;">确认</a>
+        <a href="javascript:;" class="dbMultiBtn blue" onclick="$.bringBack({ GameId: ($(this).parent().GetSelectFields(function (x) { return x.GameId; }) || []).join(','), GameName: ($(this).parent().GetSelectFields(function (x) { return x.GameName; }) || []).join(',') });" style="margin-bottom: 5px;">确认</a>
         <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().TrItemCheckAll();" style="margin-bottom: 5px;">全选</a>
         <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().TrItemInvertCheck();" style="margin-bottom: 5px;">反选</a>
         <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().ClearAll();" style="margin-bottom: 5px;">清空</a>
@@ -81,13 +81,6 @@
                 .each(function (i, o) { $(objId).InitSerachData(o, "GameName"); })
                 .keyup(function () { $(objId).InitSerachData(this, "GameName"); });
         });
-        //确认
-        function ConfirmSelect() {
-            var selectIds = ($(objId).GetSelectFields(function (x) { return x.GameId; }) || []).join(',');
-            var gameNames = ($(objId).GetSelectFields(function (x) { return x.GameName; }) || []).join(',');
-            console.log("selectIds", selectIds, "gameNames", gameNames);
-            //$.bringBack({ GameId: selectIds, GameName: gameNames });
-        }
     </script>
 </body>
 </html>
