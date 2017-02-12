@@ -56,8 +56,8 @@
             }
             var p = $.extend(true, //定义属性
             {
-                selectableHeader: "<div class='custom-header'>可选游戏</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>",
-                selectionHeader: "<div class='custom-header'>已选游戏</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>",
+                name: '',//名称
+                searchFieldName: '',//搜索字段 以,进行多字段分割  支持多个字段匹配搜索
                 colModel: [],
                 container: $('<div/>', { 'attribute-control-type': "container", 'style': 'width:100%' }),
                 selectableContainer: $('<div/>', { 'attribute-control-type': 'search', 'style': 'width:45%;float:left;' }),
@@ -83,7 +83,16 @@
                             //数据源中包含该对象
                             if (searchText !== "") {
                                 source = Enumerable.From(source).Where(function (x) {
-                                    return x[searchField].indexOf(searchText) > -1;
+                                    var fields = searchField.split(',');
+                                    var result = false;
+                                    for (var i = 0; i < fields.length; i++) {
+                                        result = x[fields[i]].indexOf(searchText) > -1;
+                                        if (result === true) {
+                                            break;
+                                        }
+                                    }
+                                    return result;
+                                    //return x[searchField].indexOf(searchText) > -1;
                                 }).Select(function (x) { return x }).ToArray();
                             }
                             searchResultData = Enumerable.From(source)
@@ -105,7 +114,15 @@
                             if ($t.selectData.length > 0) {
                                 searchResultData = Enumerable.From($t.selectData)
                                     .Where(function (x) {
-                                        return x[searchField].indexOf(searchText) > -1;
+                                        var fields = searchField.split(',');
+                                        var result = false;
+                                        for (var i = 0; i < fields.length; i++) {
+                                            result = x[fields[i]].indexOf(searchText) > -1;
+                                            if (result === true) {
+                                                break;
+                                            }
+                                        }
+                                        return result;
                                     })
                                     .Select(function (x) { return x }).ToArray();
                             }
@@ -153,7 +170,7 @@
                             }
                         }
                     },//移除选中数据
-                    InitMulti:function(tsObj) {
+                    InitMulti: function (tsObj) {
                         //初始化下拉框
                         var theadText = '<thead><tr>';
                         for (var col = 0; col < p.colModel.length; col++) {
@@ -176,8 +193,8 @@
                             .append($("<tbody/>", { "attribute-control-type": "tbody", "attribute-control-name": "result-tbody" }));//结果
                         tsObj.append(
                             p.container
-                            .append(p.selectableContainer.append(p.selectableHeader).append(sourceTable))//左侧
-                            .append(p.selectionContainer.append(p.selectionHeader).append(sltTable))//右侧
+                            .append(p.selectableContainer.append("<div class='custom-header'>可选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>").append(sourceTable))//左侧
+                            .append(p.selectionContainer.append("<div class='custom-header'>已选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>").append(sltTable))//右侧
                             [0]);
                     }//初始化下拉框
                 };
@@ -218,6 +235,8 @@
             ts.doublemultiple.InitMulti(this);
             $(ts).on("click", ".trItem", function (e) {
                 $(ts).RowClick(this);
+            }).on("keyup", "input[attribute-control-type='search']", function (e) {
+                $(ts).InitSerachData(this, p.searchFieldName);
             });
         });
     };
@@ -328,13 +347,19 @@
             var $ts = this[0];
             this.SetSourceList($ts.doublemultiple.dbMultiData);
         },//清空
-        InitSerachData: function (element,searchField) {
+        InitSerachData: function (element, searchField) {
             var $this = this;
             if ($(element).attr("attribute-control-name") === "result") { //右侧搜索
                 $this.SetResultList($this.SearchFromSltData($(element).val(), searchField));
             } else { //左侧搜索
                 $this.SetSourceList($this.Search($(element).val(), searchField));
             }
-        }//初始化搜索数据
+        },//初始化搜索数据
+        InitSerach: function () {
+            var $this = this; var $t = this[0];
+            $("input[attribute-control-type='search']").each(function (i, o) {
+                $this.InitSerachData(o, $t.doublemultiple.parm.searchFieldName);
+            });
+        }//初始化左右搜索框数据
     });
 })(jQuery);

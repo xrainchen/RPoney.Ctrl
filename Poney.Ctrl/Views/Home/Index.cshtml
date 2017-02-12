@@ -52,11 +52,11 @@
                 {
                     foreach (var obj in returnList)
                     {
-                        <tr>
-                            <td>@obj.ProductGameId</td>
-                            <td>@obj.ProductGameBrandName</td>
-                            <td>@obj.ProductGameName</td>
-                        </tr>
+                <tr>
+                    <td>@obj.ProductGameId</td>
+                    <td>@obj.ProductGameBrandName</td>
+                    <td>@obj.ProductGameName</td>
+                </tr>
                     }
                 }
             </tbody>
@@ -66,8 +66,8 @@
         var objId = "#divProductGame";
         $(function () {
             $(objId).doubleMultiple({
-                selectableHeader: "<div class='custom-header'>可选游戏</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>",
-                selectionHeader: "<div class='custom-header'>已选游戏</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>",
+                name: '游戏',
+                searchFieldName: 'GameName',//搜索字段名称GameName,GameBrandName
                 sourceDataId: 'search_ProductGame', //数据源Id
                 colModel: [
                     { field: 'GameId', name: '游戏Id', width: '95px' },
@@ -76,10 +76,8 @@
                 ],
                 sltDataIdsValue: '@Model.SelectedIds',//选中数据源
                 sltDataIdFilterFunc: function (id, x) { return id === x.GameId }//选中数据源匹配方式
-            });
-            $("input[attribute-control-type='search']")
-                .each(function (i, o) { $(objId).InitSerachData(o, "GameName"); })
-                .keyup(function () { $(objId).InitSerachData(this, "GameName"); });
+            }).InitSerach();
+            //$("input[attribute-control-type='search']").each(function(i, o) { $(objId).InitSerachData(o, "GameName"); });
         });
     </script>
 </body>
