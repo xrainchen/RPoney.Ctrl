@@ -64,7 +64,7 @@
                 selectionContainer: $('<div/>', { 'attribute-control-type': 'result', 'style': 'width:45%;float:left;' }),
                 sourceDataId: '', //数据源
                 sltDataIdsValue: '',//选中数据源
-                sltDataIdFilterFunc: function (id, x) { },//选中数据源匹配方式
+                sltDataIdField: '',//选中数据源匹配方式
                 incrementName: 'doublemultipleIncrementId'
             },
             $.doublemultiple.defaults, pin || {});
@@ -220,11 +220,14 @@
             /*---------------start 初始化选中数据-------*/
             var ids = p.sltDataIdsValue.split(","); //字符分割
             var sltResultData = [];
+            if (p.sltDataIdField === '') {
+                throw new Error("sltDataIdField cannot be empty");
+            }
             if (data.length > 0 && ids.length > 0) {
                 sltResultData = Enumerable.From(data)
                     .Where(function (x) { /*过滤已选中的数据*/
                         return Enumerable.From(ids).Any(function (id) {
-                            return p.sltDataIdFilterFunc(id, x);
+                            return id === x[p.sltDataIdField];
                         });
                     })
                     .Select(function (x) { return x }).ToArray();

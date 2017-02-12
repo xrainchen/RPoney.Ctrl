@@ -63,9 +63,8 @@
         </table>
     </div>
     <script>
-        var objId = "#divProductGame";
         $(function () {
-            $(objId).doubleMultiple({
+            $("#divProductGame").doubleMultiple({
                 name: '游戏',
                 searchFieldName: 'GameName',//搜索字段名称GameName,GameBrandName
                 sourceDataId: 'search_ProductGame', //数据源Id
@@ -75,9 +74,8 @@
                     { field: 'GameName', name: '游戏名称', width: '120px' }
                 ],
                 sltDataIdsValue: '@Model.SelectedIds',//选中数据源
-                sltDataIdFilterFunc: function (id, x) { return id === x.GameId }//选中数据源匹配方式
+                sltDataIdField: 'GameId'//选中Id对应字段
             }).InitSerach();
-            //$("input[attribute-control-type='search']").each(function(i, o) { $(objId).InitSerachData(o, "GameName"); });
         });
     </script>
 </body>
