@@ -1,0 +1,93 @@
+﻿@{
+    Layout = null;
+}@using Poney.Ctrl.Controllers
+@model ParamModel
+@{
+    Layout = null;
+    var returnList = Model.ReturnList as List<ProductGame>;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style type="text/css">
+        .dbMultiBtn {
+            font-size: 12px;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 30px;
+            background-color: #1B9AF7;
+            border-color: #1B9AF7;
+            color: #FFF;
+        }
+
+        .custom-header {
+            text-align: center;
+            background-color: black;
+            width: 90%;
+            color: #1b9af7;
+        }
+
+        .trItem {
+        }
+
+            .trItem:hover {
+                background-color: #1b9af7;
+            }
+    </style>
+    <script src="~/js/jquery-2.1.4.min.js"></script>
+    <script src="~/js/linq.min.js"></script>
+    <script src="~/js/doublemultiple.js"></script>
+</head>
+<body>
+    <div id="divProductGame" style="padding: 10px;">
+        <a href="javascript:;" class="dbMultiBtn blue" onclick="ConfirmSelect()" style="margin-bottom: 5px;">确认</a>
+        <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().TrItemCheckAll();" style="margin-bottom: 5px;">全选</a>
+        <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().TrItemInvertCheck();" style="margin-bottom: 5px;">反选</a>
+        <a href="javascript:;" class="dbMultiBtn blue" onclick="$(this).parent().ClearAll();" style="margin-bottom: 5px;">清空</a>
+        <table id="search_ProductGame" style="display: none;">
+            <tbody>
+                @if (!(returnList == null || !returnList.Any()))
+                {
+                    foreach (var obj in returnList)
+                    {
+                        <tr>
+                            <td>@obj.ProductGameId</td>
+                            <td>@obj.ProductGameBrandName</td>
+                            <td>@obj.ProductGameName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <script>
+        var objId = "#divProductGame";
+        $(function () {
+            $(objId).doubleMultiple({
+                selectableHeader: "<div class='custom-header'>可选游戏</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>",
+                selectionHeader: "<div class='custom-header'>已选游戏</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>",
+                sourceDataId: 'search_ProductGame', //数据源Id
+                colModel: [
+                    { field: 'GameId', name: '游戏Id', width: '95px' },
+                    { field: 'GameBrandName', name: '游戏Brand', width: '120px' },
+                    { field: 'GameName', name: '游戏名称', width: '120px' }
+                ],
+                sltDataIdsValue: '@Model.SelectedIds',//选中数据源
+                sltDataIdFilterFunc: function (id, x) { return id === x.GameId }//选中数据源匹配方式
+            });
+            $("input[attribute-control-type='search']")
+                .each(function (i, o) { $(objId).InitSerachData(o, "GameName"); })
+                .keyup(function () { $(objId).InitSerachData(this, "GameName"); });
+        });
+        //确认
+        function ConfirmSelect() {
+            var selectIds = ($(objId).GetSelectFields(function (x) { return x.GameId; }) || []).join(',');
+            var gameNames = ($(objId).GetSelectFields(function (x) { return x.GameName; }) || []).join(',');
+            console.log("selectIds", selectIds, "gameNames", gameNames);
+            //$.bringBack({ GameId: selectIds, GameName: gameNames });
+        }
+    </script>
+</body>
+</html>
