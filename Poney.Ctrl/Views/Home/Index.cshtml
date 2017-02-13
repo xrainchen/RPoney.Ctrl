@@ -11,31 +11,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
-    <style type="text/css">
-        .dbMultiBtn {
-            font-size: 12px;
-            height: 30px;
-            line-height: 30px;
-            padding: 0 30px;
-            background-color: #1B9AF7;
-            border-color: #1B9AF7;
-            color: #FFF;
-        }
-
-        .custom-header {
-            text-align: center;
-            background-color: black;
-            width: 90%;
-            color: #1b9af7;
-        }
-
-        .trItem {
-        }
-
-            .trItem:hover {
-                background-color: #1b9af7;
-            }
-    </style>
+    <link href="~/css/doublemultiple.css" rel="stylesheet" />
     <script src="~/js/jquery-2.1.4.min.js"></script>
     <script src="~/js/linq.min.js"></script>
     <script src="~/js/doublemultiple.js"></script>
@@ -52,11 +28,11 @@
                 {
                     foreach (var obj in returnList)
                     {
-                <tr>
-                    <td>@obj.ProductGameId</td>
-                    <td>@obj.ProductGameBrandName</td>
-                    <td>@obj.ProductGameName</td>
-                </tr>
+                        <tr>
+                            <td>@obj.ProductGameId</td>
+                            <td>@obj.ProductGameBrandName</td>
+                            <td>@obj.ProductGameName</td>
+                        </tr>
                     }
                 }
             </tbody>
@@ -73,8 +49,7 @@
                     { field: 'GameBrandName', name: '游戏Brand', width: '120px' },
                     { field: 'GameName', name: '游戏名称', width: '120px' }
                 ],
-                sltDataIdsValue: '@Model.SelectedIds',//选中数据源
-                sltDataIdField: 'GameId'//选中Id对应字段
+                sltDataIds: { value: '@Model.SelectedIds', field: 'GameId' }//选中数据源
             }).InitSerach();
         });
     </script>

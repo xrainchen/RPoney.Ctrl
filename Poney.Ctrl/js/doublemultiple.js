@@ -60,11 +60,10 @@
                 searchFieldName: '',//搜索字段 以,进行多字段分割  支持多个字段匹配搜索
                 colModel: [],
                 container: $('<div/>', { 'attribute-control-type': "container", 'style': 'width:100%' }),
-                selectableContainer: $('<div/>', { 'attribute-control-type': 'search', 'style': 'width:45%;float:left;' }),
-                selectionContainer: $('<div/>', { 'attribute-control-type': 'result', 'style': 'width:45%;float:left;' }),
+                selectableContainer: $('<div/>', { 'attribute-control-type': 'search', 'style': 'width:47%;float:left;' }),
+                selectionContainer: $('<div/>', { 'attribute-control-type': 'result', 'style': 'width:47%;float:right;' }),
                 sourceDataId: '', //数据源
-                sltDataIdsValue: '',//选中数据源
-                sltDataIdField: '',//选中数据源匹配方式
+                sltDataIds: { value: '', field: '' },//选中数据源
                 incrementName: 'doublemultipleIncrementId'
             },
             $.doublemultiple.defaults, pin || {});
@@ -182,19 +181,19 @@
                                 tdstyle += "display:" + ((p.colModel[col].hidden === true) ? "none" : " " + ";");
                             }
                             tdstyle += '"';
-                            theadText += '<td ' + tdstyle + '>' + p.colModel[col].name + '</td>';
+                            theadText += '<th ' + tdstyle + '>' + p.colModel[col].name + '</th>';
                         }
                         theadText += '</tr></thead>';
-                        var sourceTable = $('<table/>')
-                            .append(theadText)
-                            .append($("<tbody/>", { "attribute-control-type": "tbody", "attribute-control-name": "search-tbody" }));//搜索 
-                        var sltTable = $('<table/>')
-                            .append(theadText)
-                            .append($("<tbody/>", { "attribute-control-type": "tbody", "attribute-control-name": "result-tbody" }));//结果
+
+                        var sourceTable = $("<div/>", { 'style': 'overflow-y: auto; height: 243px;' })
+                            .append($('<table/>', { 'class': 'dbmultitable' }).append(theadText).append($("<tbody/>", { "attribute-control-type": "tbody", "attribute-control-name": "search-tbody" })));//搜索 
+
+                        var sltTable = $("<div/>", { 'style': 'overflow-y: auto; height: 243px;' })
+                            .append($('<table/>', { 'class': 'dbmultitable' }).append(theadText).append($("<tbody/>", { "attribute-control-type": "tbody", "attribute-control-name": "result-tbody" })));//结果
                         tsObj.append(
                             p.container
-                            .append(p.selectableContainer.append("<div class='custom-header'>可选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>").append(sourceTable))//左侧
-                            .append(p.selectionContainer.append("<div class='custom-header'>已选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>").append(sltTable))//右侧
+                            .append(p.selectableContainer.append("<div class='custom-header' style='margin-bottom: 8px;'>可选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search' attribute-control-name='source' autocomplete='off' placeholder=''>").append(sourceTable))//左侧
+                            .append(p.selectionContainer.append("<div class='custom-header' style='margin-bottom: 8px;'>已选" + p.name + "</div>搜索：<input type='text' attribute-control-type='search'  attribute-control-name='result' autocomplete='off' placeholder=''>").append(sltTable))//右侧
                             [0]);
                     }//初始化下拉框
                 };
@@ -218,16 +217,16 @@
             /*----------------end-初始化数据源---------*/
 
             /*---------------start 初始化选中数据-------*/
-            var ids = p.sltDataIdsValue.split(","); //字符分割
+            var ids = p.sltDataIds["value"].split(","); //字符分割
             var sltResultData = [];
-            if (p.sltDataIdField === '') {
+            if (p.sltDataIds["field"] === '') {
                 throw new Error("sltDataIdField cannot be empty");
             }
             if (data.length > 0 && ids.length > 0) {
                 sltResultData = Enumerable.From(data)
                     .Where(function (x) { /*过滤已选中的数据*/
                         return Enumerable.From(ids).Any(function (id) {
-                            return id === x[p.sltDataIdField];
+                            return id === x[p.sltDataIds["field"]];
                         });
                     })
                     .Select(function (x) { return x }).ToArray();
